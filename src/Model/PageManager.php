@@ -48,5 +48,45 @@ class PageManager
         $query->bindParam(':page', $pageId, \PDO::PARAM_INT);
         return $query->execute();
     }
+
+    public function getUserTotalPages(User $user)
+    {
+        $userId = $user->getUserId();
+        $statement = $this->database->prepare(
+            'SELECT COUNT(*) AS `total_pages` FROM `pages` 
+             INNER JOIN `websites` ON ( websites.`website_id` = pages.`website_id` ) 
+             WHERE  websites.`user_id` = :userId'
+        );
+        $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetchColumn();
+    }
+
+    public function getPageById(int $pageId)
+    {
+        $statement = $this->database->prepare('SELECT * FROM `pages` WHERE `page_id` = :pageId');
+        $statement->bindParam(':pageId', $pageId, \PDO::PARAM_INT);
+        $statement->setFetchMode(\PDO::FETCH_CLASS, Page::class);
+        $statement->execute();
+        return $statement->fetch(\PDO::FETCH_CLASS);
+    }
+
+    public function getVisitedPagesByUser(User $user, $sort = 'ASC')
+    {
+        $userId = $user->getUserId();
+        $statement = $this->database->prepare(
+            'SELECT pages.`page_id` FROM `websites` 
+             INNER JOIN `pages` ON (pages.`website_id` = websites.`website_id`) 
+             WHERE pages.`last_visit` IS NOT NULL AND websites.`user_id` = :userId 
+             ORDER BY pages.`last_visit` ' . $sort
+        );
+        $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($statement->rowCount()) {
+            return $this->getPageById($statement->fetchColumn());
+        } else {
+            return null;
+        }
+    }
 }
 

@@ -5,7 +5,7 @@ interface Old_Legacy_CacheWarmer_Resolver_Interface
     public function getIp($hostname);
 }
 
-class Old_Legacy_CacheWarmer_Resolver_Method implements Old_Legacy_CacheWarmer_Resolver_Interface 
+class Old_Legacy_CacheWarmer_Resolver_Method implements Old_Legacy_CacheWarmer_Resolver_Interface
 {
     public function getIp($hostname)
     {
@@ -20,10 +20,10 @@ class Old_Legacy_CacheWarmer_Actor
     public function setActor($callable) {
         $this->callable = $callable;
     }
-    
-    public function act($hostname, $ip, $url)
+
+    public function act($hostname, $ip, $url, $varnishIp)
     {
-        call_user_func($this->callable, $hostname, $ip, $url);
+        call_user_func($this->callable, $hostname, $ip, $url, $varnishIp);
     }
 }
 
@@ -35,6 +35,7 @@ class Old_Legacy_CacheWarmer_Warmer
     private $resolver;
     /** @var string */
     private $hostname;
+    private $varnish;
 
     /**
      * @param Old_Legacy_CacheWarmer_Actor $actor
@@ -53,6 +54,14 @@ class Old_Legacy_CacheWarmer_Warmer
     }
 
     /**
+     * @param $varnish
+     */
+    public function setVarnish($varnish)
+    {
+        $this->varnish = $varnish;
+    }
+
+    /**
      * @param Old_Legacy_CacheWarmer_Resolver_Interface $resolver
      */
     public function setResolver($resolver)
@@ -62,9 +71,10 @@ class Old_Legacy_CacheWarmer_Warmer
 
     public function warm($url) {
         $ip = $this->resolver->getIp($this->hostname);
+        $varnishIp = $this->varnish->getIp();
         sleep(1); // this emulates visit to http://$hostname/$url via $ip
-        $this->actor->act($this->hostname, $ip, $url);
+        $this->actor->act($this->hostname, $ip, $url, $varnishIp);
     }
-    
+
 }
 

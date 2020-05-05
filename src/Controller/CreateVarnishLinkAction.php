@@ -26,6 +26,26 @@ class CreateVarnishLinkAction
 
     public function execute()
     {
-        // TODO: add module logic here
+        $varnishId = $_POST['varnishId'];
+        $websiteId = $_POST['websiteId'];
+        $isChecked = ($_POST['checked'] == 'true') ? TRUE : FALSE;
+        try {
+            if ($isChecked) {
+                $this->varnishManager->link($varnishId, $websiteId);
+                $msg = 'Varnish server linked successfully!';
+            } else {
+                $this->varnishManager->unlink($varnishId, $websiteId);
+                $msg = 'Varnish server unlinked.';
+            }
+            echo json_encode([
+                'status' => 'success',
+                'message' => $msg
+            ]);
+        } catch (\Exception $ex) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $ex->getMessage()
+            ]);
+        }
     }
 }

@@ -53,4 +53,14 @@ class UserManager
     {
         return hash('sha512', $password . $salt);
     }
+
+    public function getById($id)
+    {
+        /** @var \PDOStatement $query */
+        $query = $this->database->prepare('SELECT * FROM users WHERE user_id = :user_id');
+        $query->setFetchMode(\PDO::FETCH_CLASS, User::class);
+        $query->bindParam(':user_id', $id, \PDO::PARAM_INT);
+        $query->execute();
+        return $query->fetch(\PDO::FETCH_CLASS);
+    }
 }

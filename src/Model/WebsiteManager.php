@@ -15,7 +15,7 @@ class WebsiteManager
     {
         $this->database = $database;
     }
-    
+
     public function getById($websiteId) {
         /** @var \PDOStatement $query */
         $query = $this->database->prepare('SELECT * FROM websites WHERE website_id = :id');
@@ -47,6 +47,15 @@ class WebsiteManager
         $statement->bindParam(':user', $userId, \PDO::PARAM_INT);
         $statement->execute();
         return $this->database->lastInsertId();
+    }
+
+    public function getByHostname($hostname) {
+        /** @var \PDOStatement $query */
+        $query = $this->database->prepare('SELECT * FROM websites WHERE hostname = :hostname');
+        $query->setFetchMode(\PDO::FETCH_CLASS, Website::class);
+        $query->bindParam(':hostname', $hostname, \PDO::PARAM_STR);
+        $query->execute();
+        return $query->fetch(\PDO::FETCH_CLASS);
     }
 
 }

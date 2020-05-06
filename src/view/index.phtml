@@ -68,6 +68,29 @@
                 </table>
             </div>
         <?php endif ?>
+        <div class="padded">
+            <p>Create website and pages by online sitemap import</p>
+            <form class="form-inline" method="post" action="/importsitemap">
+                <div class="form-group">
+                    <label for="exampleInputName3">Sitemap URL</label>
+                    <input type="text" name="sitemapUrl" class="form-control" id="sitemapUrl"
+                           placeholder="http://mysite.com/sitemap.xml" size="50">
+                </div>
+                <button type="submit" class="btn btn-primary">Import Sitemap</button>
+            </form>
+        </div>
+
+        <div class="padded">
+            <p>Create website and pages by direct XML sitemap insertion</p>
+            <form class="form-inline" method="post" action="/importsitemap">
+                <div class="form-group">
+                    <label for="exampleInputName4" style="vertical-align: top">Sitemap XML</label>
+                    <textarea name="sitemapXML" class="form-control" id="sitemapXML" cols="50" rows="10"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="vertical-align: top">Import Sitemap</button>
+            </form>
+        </div>
+
     </div>
 
 </div><!-- /.container -->

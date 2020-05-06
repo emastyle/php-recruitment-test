@@ -2,6 +2,7 @@
 
 use Snowdog\DevTest\Command\MigrateCommand;
 use Snowdog\DevTest\Command\WarmCommand;
+use Snowdog\DevTest\Command\SitemapImporterCommand;
 use Snowdog\DevTest\Component\CommandRepository;
 use Snowdog\DevTest\Component\Menu;
 use Snowdog\DevTest\Component\Migrations;
@@ -18,6 +19,7 @@ use Snowdog\DevTest\Controller\WebsiteAction;
 use Snowdog\DevTest\Controller\VarnishesAction;
 use Snowdog\DevTest\Controller\CreateVarnishAction;
 use Snowdog\DevTest\Controller\CreateVarnishLinkAction;
+use Snowdog\DevTest\Controller\ImportSitemapAction;
 use Snowdog\DevTest\Menu\LoginMenu;
 use Snowdog\DevTest\Menu\RegisterMenu;
 use Snowdog\DevTest\Menu\WebsitesMenu;
@@ -35,9 +37,11 @@ RouteRepository::registerRoute('POST', '/page', CreatePageAction::class, 'execut
 RouteRepository::registerRoute('GET', '/varnishes', VarnishesAction::class, 'execute');
 RouteRepository::registerRoute('POST', '/varnish', CreateVarnishAction::class, 'execute');
 RouteRepository::registerRoute('POST', '/varnish/link', CreateVarnishLinkAction::class, 'execute');
+RouteRepository::registerRoute('POST', '/importsitemap', ImportSitemapAction::class, 'execute');
 
 CommandRepository::registerCommand('migrate_db', MigrateCommand::class);
 CommandRepository::registerCommand('warm [id]', WarmCommand::class);
+CommandRepository::registerCommand('importsitemap [userid] [sitemapUrl]', SitemapImporterCommand::class);
 
 Menu::register(LoginMenu::class, 200);
 Menu::register(RegisterMenu::class, 250);

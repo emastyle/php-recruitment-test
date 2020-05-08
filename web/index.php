@@ -2,6 +2,7 @@
 
 use Snowdog\DevTest\Component\Menu;
 use Snowdog\DevTest\Component\RouteRepository;
+use Snowdog\DevTest\Model\UserManager;
 
 session_start();
 
@@ -26,6 +27,19 @@ switch ($route[0]) {
     case FastRoute\Dispatcher::FOUND:
         $controller = $route[1];
         $parameters = $route[2];
+
+        if (isset($controller[2]) && $controller[2] == USER_RESTRICTION_LOGGEDIN && !UserManager::isLogged()) {
+            header("Location: /login");
+            exit;
+        }
+
+        if (isset($controller[2]) && $controller[2] == USER_RESTRICTION_LOGGEDOUT && UserManager::isLogged()) {
+            header("HTTP/1.0 403 Forbidden");
+            require __DIR__ . '/../src/view/403.phtml';
+            exit;
+        }
+
+        unset($controller[2]);
         $container->call($controller, $parameters);
         break;
 }

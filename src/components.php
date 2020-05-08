@@ -25,16 +25,19 @@ use Snowdog\DevTest\Menu\RegisterMenu;
 use Snowdog\DevTest\Menu\WebsitesMenu;
 use Snowdog\DevTest\Menu\VarnishesMenu;
 
-RouteRepository::registerRoute('GET', '/', IndexAction::class, 'execute');
-RouteRepository::registerRoute('GET', '/login', LoginFormAction::class, 'execute');
+const USER_RESTRICTION_LOGGEDIN = 'loggedin';
+const USER_RESTRICTION_LOGGEDOUT = 'loggedout';
+
+RouteRepository::registerRoute('GET', '/', IndexAction::class, 'execute', USER_RESTRICTION_LOGGEDIN);
+RouteRepository::registerRoute('GET', '/login', LoginFormAction::class, 'execute', USER_RESTRICTION_LOGGEDOUT);
 RouteRepository::registerRoute('POST', '/login', LoginAction::class, 'execute');
 RouteRepository::registerRoute('GET', '/logout', LogoutAction::class, 'execute');
-RouteRepository::registerRoute('GET', '/register', RegisterFormAction::class, 'execute');
+RouteRepository::registerRoute('GET', '/register', RegisterFormAction::class, 'execute', USER_RESTRICTION_LOGGEDOUT);
 RouteRepository::registerRoute('POST', '/register', RegisterAction::class, 'execute');
-RouteRepository::registerRoute('GET', '/website/{id:\d+}', WebsiteAction::class, 'execute');
-RouteRepository::registerRoute('POST', '/website', CreateWebsiteAction::class, 'execute');
+RouteRepository::registerRoute('GET', '/website/{id:\d+}', WebsiteAction::class, 'execute', USER_RESTRICTION_LOGGEDIN);
+RouteRepository::registerRoute('POST', '/website', CreateWebsiteAction::class, 'execute', USER_RESTRICTION_LOGGEDIN);
 RouteRepository::registerRoute('POST', '/page', CreatePageAction::class, 'execute');
-RouteRepository::registerRoute('GET', '/varnishes', VarnishesAction::class, 'execute');
+RouteRepository::registerRoute('GET', '/varnishes', VarnishesAction::class, 'execute', USER_RESTRICTION_LOGGEDIN);
 RouteRepository::registerRoute('POST', '/varnish', CreateVarnishAction::class, 'execute');
 RouteRepository::registerRoute('POST', '/varnish/link', CreateVarnishLinkAction::class, 'execute');
 RouteRepository::registerRoute('POST', '/importsitemap', ImportSitemapAction::class, 'execute');
